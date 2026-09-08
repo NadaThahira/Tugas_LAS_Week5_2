@@ -20,7 +20,7 @@ st.set_page_config(
 )
 
 IMG_SIZE = (224, 224)
-MODEL_PATH = "models/custom_cnn.h5"
+MODEL_PATH = "tomato_leaf_best_model.h5"
 
 CLASSES = [
     "Tomato___Bacterial_spot",
