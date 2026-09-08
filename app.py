@@ -270,7 +270,7 @@ if uploaded is None:
 else:
     image = Image.open(uploaded)
     render_steps(2)
-    st.image(image, use_container_width=True, caption="Foto yang kamu unggah")
+    st.image(image, use_column_width=True, caption="Foto yang kamu unggah")
 
     with st.spinner("Sedang menganalisis daun..."):
         probs = predict(image)
