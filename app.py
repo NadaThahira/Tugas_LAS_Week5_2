@@ -176,10 +176,18 @@ st.markdown(
     .barrow-fill {{ height: 100%; border-radius: 6px; }}
     .barrow-pct {{ width: 44px; text-align: right; font-size: 0.78rem; color: {t['text']} !important; }}
 
-    .version-row {{ border-left: 3px solid {t['primary']}; padding: 0.2rem 0 0.2rem 1rem; margin-bottom: 1rem; }}
-    .version-tag {{ display: inline-block; background: {t['primary']}; color: {t['primary_text']} !important;
-                     font-size: 0.76rem; padding: 0.12rem 0.6rem; border-radius: 20px; margin-right: 0.5rem; }}
-    .version-date {{ color: {t['muted']} !important; font-size: 0.8rem; }}
+    .version-table {{ width: 100%; border-collapse: collapse; font-size: 0.86rem; }}
+    .version-table th {{
+        text-align: left; padding: 0.55rem 0.75rem; border-bottom: 2px solid {t['border']};
+        color: {t['muted']} !important; font-weight: 600; font-size: 0.76rem;
+        text-transform: uppercase; letter-spacing: 0.4px;
+    }}
+    .version-table td {{
+        padding: 0.75rem; border-bottom: 1px solid {t['border']}; vertical-align: top; color: {t['text']} !important;
+    }}
+    .version-table tr:last-child td {{ border-bottom: none; }}
+    .version-table td.version-col {{ font-weight: 700; white-space: nowrap; color: {t['primary']} !important; }}
+    .version-table td.date-col {{ color: {t['muted']} !important; white-space: nowrap; }}
 
     /* Komponen native Streamlit: uploader, tombol, expander */
     [data-testid="stFileUploaderDropzone"] {{
@@ -281,7 +289,7 @@ if st.session_state.stage == 1:
         st.markdown(
             """
             <div class="card">
-            <b>Cara pakai (30 detik):</b>
+            <b>Panduan Penggunaan:</b>
             <ul class="tips-list">
                 <li>Klik kotak di atas, atau tarik & lepas foto daun tomat.</li>
                 <li>Ambil foto <b>close-up 1 daun</b>, cahaya cukup, latar polos.</li>
@@ -390,17 +398,23 @@ with st.expander("📖 Daftar penyakit yang bisa dikenali"):
     st.markdown(list_html, unsafe_allow_html=True)
 
 with st.expander("🕓 Riwayat versi aplikasi"):
-    st.caption("Tambahkan screenshot versi sebelumnya di folder `docs/screenshots/` lalu tampilkan dengan `st.image()` di sini.")
     rows = []
     for v in VERSION_LOG:
         rows.append(
-            f'<div class="version-row">'
-            f'<span class="version-tag">{v["versi"]}</span>'
-            f'<span class="version-date">{v["tanggal"]}</span>'
-            f'<p style="margin:0.3rem 0 0 0;">{v["perubahan"]}</p>'
-            f'</div>'
+            f'<tr>'
+            f'<td class="version-col">{v["versi"]}</td>'
+            f'<td class="date-col">{v["tanggal"]}</td>'
+            f'<td>{v["perubahan"]}</td>'
+            f'</tr>'
         )
-    version_html = '<div class="scroll-box">' + "".join(rows) + "</div>"
+    version_html = (
+        '<div class="scroll-box">'
+        '<table class="version-table">'
+        '<thead><tr><th>Versi</th><th>Tanggal</th><th>Perubahan</th></tr></thead>'
+        '<tbody>' + "".join(rows) + '</tbody>'
+        '</table>'
+        '</div>'
+    )
     st.markdown(version_html, unsafe_allow_html=True)
 
 st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 2")
