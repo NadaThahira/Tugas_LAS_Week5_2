@@ -16,11 +16,15 @@ st.set_page_config(
     page_title="TomaLeaf Dx — Smart Diagnosis for Tomato Leaf Diseases",
     page_icon="🍅",
     layout="centered",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 IMG_SIZE = (224, 224)
 MODEL_PATH = "tomato_leaf_best_model.h5"
+<<<<<<< HEAD
+=======
+MIN_PLANT_COLOR_RATIO = 0.15
+>>>>>>> 51cd4553614f98d82be44994fb1df99a7f12ca9d
 
 CLASSES = [
     "Tomato___Bacterial_spot",
@@ -99,10 +103,16 @@ DISEASE_INFO = {
 }
 
 VERSION_LOG = [
+<<<<<<< HEAD
     {"versi": "v1.0", "tanggal": "2026-08-25", "perubahan": "Rilis awal: upload gambar, pilih model, tampilkan kelas prediksi & confidence dalam bentuk teks."},
     {"versi": "v2.0", "tanggal": "2026-08-29", "perubahan": "Tambah mode bandingkan 2 model side-by-side, bar chart confidence per kelas, kartu info penyakit berwarna."},
     {"versi": "v3.0", "tanggal": "2026-09-08", "perubahan": "Sederhanakan jadi 1 model (CNN Custom), alur single-page 3 langkah, dan toggle mode terang/gelap dengan kontras warna yang eksplisit."},
     {"versi": "v5.0 (final)", "tanggal": "2026-09-08", "perubahan": "Tambah langkah konfirmasi sebelum diagnosa (bukan auto-proses), pisahkan tampilan Proses & Hasil, batasi ukuran preview foto, perbaiki kontras tombol, dan bikin daftar penyakit bisa di-scroll dalam 1 area tanpa memotong konteks."},
+=======
+    {"versi": "v1.0", "tanggal": "2026-09-08", "perubahan": "Rilis awal: Implementasi alur multi-halaman (tampilan upload, proses, dan hasil inferensi terpisah) dengan output prediksi berupa teks persentase keyakinan."},
+    {"versi": "v2.0", "tanggal": "2026-08-29", "perubahan": "To be continue"},
+    {"versi": "v3.0", "tanggal": "2026-09-08", "perubahan": "To be continue."},
+>>>>>>> 51cd4553614f98d82be44994fb1df99a7f12ca9d
 ]
 
 # ----------------------------------------------------------------------------
@@ -125,6 +135,8 @@ THEMES = {
 
 if "dark_mode" not in st.session_state:
     st.session_state.dark_mode = False
+if "page" not in st.session_state:
+    st.session_state.page = "diagnosis"
 
 t = THEMES["dark"] if st.session_state.dark_mode else THEMES["light"]
 
@@ -195,6 +207,8 @@ st.markdown(
     }}
     [data-testid="stExpander"] {{ background: {t['card']} !important; border: 1px solid {t['border']} !important; border-radius: 12px !important; }}
     [data-testid="stExpander"] summary, [data-testid="stExpander"] summary * {{ color: {t['text']} !important; }}
+    [data-testid="stExpander"] summary, [data-testid="stExpander"] summary p, [data-testid="stExpander"] summary span,
+    [data-testid="stExpander"] summary div {{ font-weight: 700 !important; font-size: 1.05rem !important; }}
     [data-testid="stExpander"] p, [data-testid="stExpander"] li, [data-testid="stExpander"] span {{ color: {t['text']} !important; }}
 
     /* Perkuat kontras teks tombol (beberapa versi Streamlit bungkus label di elemen anak) */
@@ -205,6 +219,43 @@ st.markdown(
 
     /* Batasi lebar preview foto supaya tidak raksasa di layar besar */
     .preview-wrap img {{ border-radius: 12px; }}
+<<<<<<< HEAD
+=======
+
+    /* Sidebar navigasi */
+    section[data-testid="stSidebar"] {{ background: {t['card']} !important; border-right: 1px solid {t['border']}; }}
+    section[data-testid="stSidebar"] p, section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] div.sidebar-brand {{ color: {t['text']} !important; }}
+    .sidebar-brand {{ font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; padding: 0.3rem 0 1rem 0; }}
+    section[data-testid="stSidebar"] hr {{ border-color: {t['border']} !important; border-top: 1px solid {t['border']} !important; opacity: 1 !important; margin: 1rem 0 !important; }}
+    section[data-testid="stSidebar"] .stButton button {{
+        background: transparent !important; color: {t['text']} !important; border: none !important;
+        text-align: left !important; justify-content: flex-start !important; font-weight: 500 !important;
+        padding: 0.5rem 0.7rem !important; border-radius: 8px !important; box-shadow: none !important;
+    }}
+    section[data-testid="stSidebar"] .stButton button p {{ color: {t['text']} !important; font-weight: 500 !important; text-align: left !important; }}
+    section[data-testid="stSidebar"] .stButton button:hover {{ background: {t['track']} !important; }}
+    section[data-testid="stSidebar"] .stButton button:hover p,
+    section[data-testid="stSidebar"] .stButton button:hover div,
+    section[data-testid="stSidebar"] .stButton button:hover span {{ color: {t['text']} !important; }}
+    section[data-testid="stSidebar"] button[kind="primary"]:hover {{ background: {t['primary']} !important; }}
+    section[data-testid="stSidebar"] button[kind="primary"]:hover p,
+    section[data-testid="stSidebar"] button[kind="primary"]:hover div,
+    section[data-testid="stSidebar"] button[kind="primary"]:hover span {{ color: {t['primary_text']} !important; }}
+    section[data-testid="stSidebar"] button[kind="primary"] {{ background: {t['primary']} !important; }}
+    section[data-testid="stSidebar"] button[kind="primary"] p,
+    section[data-testid="stSidebar"] button[kind="primary"] div,
+    section[data-testid="stSidebar"] button[kind="primary"] span {{ color: {t['primary_text']} !important; font-weight: 600 !important; }}
+
+    /* Tabel riwayat versi */
+    .version-table {{ width: 100%; border-collapse: collapse; font-size: 0.88rem; table-layout: fixed; }}
+    .version-table th {{ text-align: left; padding: 0.5rem 0.6rem; border-bottom: 2px solid {t['border']}; color: {t['muted']} !important; font-weight: 600; }}
+    .version-table td {{ padding: 0.55rem 0.6rem; border-bottom: 1px solid {t['border']}; vertical-align: top; color: {t['text']} !important; }}
+    .version-table tr:last-child td {{ border-bottom: none; }}
+    .version-table th:nth-child(1), .version-table td:nth-child(1) {{ width: 14%; }}
+    .version-table th:nth-child(2), .version-table td:nth-child(2) {{ width: 22%; white-space: nowrap; }}
+    .version-table th:nth-child(3), .version-table td:nth-child(3) {{ width: 64%; }}
+>>>>>>> 51cd4553614f98d82be44994fb1df99a7f12ca9d
     </style>
     """,
     unsafe_allow_html=True,
@@ -226,6 +277,23 @@ def predict(image: Image.Image):
     return model.predict(batch, verbose=0)[0]
 
 
+def is_plant_like(image: Image.Image) -> tuple[bool, float]:
+    """Cek cepat berbasis warna: apakah gambar didominasi warna khas daun
+    (hijau/kuning/coklat) sebelum dikirim ke model. Tidak menyentuh model sama sekali."""
+    img = image.convert("RGB").resize((100, 100))
+    arr = np.array(img).astype("float32")
+    r, g, b = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2]
+
+    # Hijau daun: G dominan dibanding R dan B
+    green_mask = (g > r * 1.05) & (g > b * 1.05)
+    # Coklat/kuning (daun kering/bercak): R & G tinggi, B rendah, tidak terlalu gelap/terang
+    brown_yellow_mask = (r > b * 1.15) & (g > b * 1.05) & (r > 60) & (r < 230)
+
+    plant_mask = green_mask | brown_yellow_mask
+    ratio = float(np.mean(plant_mask))
+    return ratio >= MIN_PLANT_COLOR_RATIO, ratio
+
+
 def render_steps(active: int):
     labels = ["Upload & Konfirmasi", "Lihat Hasil"]
     html = '<div class="steps">'
@@ -237,15 +305,160 @@ def render_steps(active: int):
 
 
 # ----------------------------------------------------------------------------
-# TOGGLE TEMA
+# HALAMAN: DIAGNOSIS
 # ----------------------------------------------------------------------------
-toggle_col1, toggle_col2 = st.columns([5, 1])
-with toggle_col2:
-    st.toggle("🌙", key="dark_mode", help="Mode gelap / terang")
+def render_diagnosis():
+    st.markdown(
+        """
+        <div class="hero">
+            <div style="font-size:2.2rem;">🍅</div>
+            <div class="hero-title">TomaLeaf Dx</div>
+            <div class="hero-tagline">Smart Diagnosis for Tomato Leaf Diseases</div>
+            <div class="hero-sub">Penasaran dengan kondisi daun tomatmu? Upload fotonya untuk mengetahui
+            apakah sehat atau terkena salah satu dari 9 penyakit umum, lengkap dengan saran penanganannya.</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    if "stage" not in st.session_state:
+        st.session_state.stage = 1
+    if "image_bytes" not in st.session_state:
+        st.session_state.image_bytes = None
+    if "probs" not in st.session_state:
+        st.session_state.probs = None
+
+    render_steps(st.session_state.stage)
+
+    if st.session_state.stage == 1:
+        uploaded = st.file_uploader(" ", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
+
+        if uploaded is None:
+            st.markdown(
+                """
+                <div class="card">
+                <b>Panduan Penggunaan</b>
+                <ul class="tips-list">
+                    <li>Klik kotak di atas, atau tarik & lepas foto daun tomat.</li>
+                    <li>Ambil foto <b>close-up 1 daun</b>, cahaya cukup, latar polos.</li>
+                    <li>Konfirmasi foto, baru sistem mendiagnosa dan kasih saran penanganan.</li>
+                </ul>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        else:
+            image = Image.open(uploaded)
+
+            col_l, col_mid, col_r = st.columns([1, 2, 1])
+            with col_mid:
+                st.markdown('<div class="preview-wrap">', unsafe_allow_html=True)
+                st.image(image, use_column_width=True, caption="Preview foto")
+                st.markdown("</div>", unsafe_allow_html=True)
+
+            st.markdown(
+                """
+                <div class="card" style="text-align:center;">
+                <div style="font-size:1.05rem; font-weight:700; margin-bottom:0.5rem;">Konfirmasi Foto</div>
+                <div>Periksa foto sebelum memulai diagnosis.<br>
+                Pastikan daun terlihat jelas dan fokus. Jika ingin mengganti foto, klik tombol × di bagian atas.</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            if st.button("Mulai Diagnosa →", type="primary", use_container_width=True):
+                plant_like, ratio = is_plant_like(image)
+                if not plant_like:
+                    st.error(
+                        f"Gambar tidak terdeteksi sebagai daun tomat (kecocokan warna khas daun hanya {ratio*100:.0f}%). "
+                        "Coba unggah foto close-up satu daun dengan pencahayaan yang cukup."
+                    )
+                else:
+                    with st.spinner("Sedang menganalisis daun..."):
+                        probs = predict(image)
+                    st.session_state.image_bytes = uploaded.getvalue()
+                    st.session_state.probs = probs.tolist()
+                    st.session_state.stage = 2
+                    st.rerun()
+
+    elif st.session_state.stage == 2:
+        probs = np.array(st.session_state.probs)
+        top_idx = int(np.argmax(probs))
+        top_class = CLASSES[top_idx]
+        info = DISEASE_INFO[top_class]
+        color = t[info["tingkat"]]
+
+        st.markdown(
+            f"""
+            <div class="result-card" style="background:{color}; color:#FFFFFF;">
+                <div class="result-label">Hasil Diagnosa</div>
+                <div class="result-name">{info['nama']}</div>
+                <div class="result-conf">Tingkat keyakinan model: {probs[top_idx]*100:.1f}%</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            f"""
+            <div class="card">
+                <p style="margin:0 0 0.4rem 0;"><b>Penyebab:</b> {info['penyebab']}</p>
+                <p style="margin:0 0 0.4rem 0;"><b>Gejala:</b> {info['gejala']}</p>
+                <p style="margin:0;"><b>Saran penanganan:</b> {info['saran']}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        with st.expander("Lihat rincian keyakinan untuk semua kelas"):
+            order = np.argsort(probs)[::-1]
+            bars = []
+            for i in order:
+                pct = probs[i] * 100
+                cls_i = CLASSES[i]
+                bars.append(
+                    f'<div class="barrow">'
+                    f'<div class="barrow-label">{DISEASE_INFO[cls_i]["nama"]}</div>'
+                    f'<div class="barrow-track"><div class="barrow-fill" style="width:{pct:.1f}%; background:{t[DISEASE_INFO[cls_i]["tingkat"]]};"></div></div>'
+                    f'<div class="barrow-pct">{pct:.1f}%</div>'
+                    f'</div>'
+                )
+            bars_html = '<div class="scroll-box">' + "".join(bars) + "</div>"
+            st.markdown(bars_html, unsafe_allow_html=True)
+
+        if st.button("↻ Coba Foto Lain", use_container_width=True):
+            st.session_state.stage = 1
+            st.session_state.image_bytes = None
+            st.session_state.probs = None
+            st.rerun()
+
+    with st.expander("Penyakit yang dapat dikenali"):
+        st.markdown(
+            '<div style="font-size:0.88rem; color:{}; margin-bottom:0.8rem;">Daftar mencakup tingkat keparahan penyakit tersebut.</div>'.format(t["muted"]),
+            unsafe_allow_html=True,
+        )
+        cards = []
+        for cls in CLASSES:
+            info = DISEASE_INFO[cls]
+            color = t[info["tingkat"]]
+            tag = "" if info["tingkat"] == "sehat" else f'<span style="font-size:0.72rem; color:{color} !important; font-weight:600;"> · {info["tingkat"].upper()}</span>'
+            cards.append(
+                f'<div class="card" style="border-left:4px solid {color}; margin-bottom:0.6rem;">'
+                f'<b>{info["nama"]}</b>'
+                f'{tag}'
+                f'</div>'
+            )
+        list_html = '<div class="scroll-box">' + "".join(cards) + "</div>"
+        st.markdown(list_html, unsafe_allow_html=True)
+
+    st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 5")
+
 
 # ----------------------------------------------------------------------------
-# HERO
+# HALAMAN: TENTANG APLIKASI
 # ----------------------------------------------------------------------------
+<<<<<<< HEAD
 st.markdown(
     """
     <div class="hero">
@@ -341,15 +554,39 @@ elif st.session_state.stage == 2:
 
     st.markdown(
         f"""
+=======
+def render_about():
+    st.markdown('<div class="hero-title" style="text-align:left; font-size:1.6rem; margin-bottom:1rem;">Tentang Aplikasi</div>', unsafe_allow_html=True)
+
+    st.markdown(
+        """
         <div class="card">
-            <p style="margin:0 0 0.4rem 0;"><b>Penyebab:</b> {info['penyebab']}</p>
-            <p style="margin:0 0 0.4rem 0;"><b>Gejala:</b> {info['gejala']}</p>
-            <p style="margin:0;"><b>Saran penanganan:</b> {info['saran']}</p>
+            <b>Tentang TomaLeaf Dx</b>
+            <p style="margin:0.5rem 0 0.4rem 0;">TomaLeaf Dx merupakan aplikasi untuk membantu mengidentifikasi kondisi
+            dan penyakit pada daun tomat berdasarkan foto yang diunggah pengguna.</p>
+            <p style="margin:0;">Aplikasi ini membantu proses identifikasi awal berdasarkan gambar, dan bukan
+            pengganti pemeriksaan langsung oleh ahli tanaman.</p>
+        </div>
+
+>>>>>>> 51cd4553614f98d82be44994fb1df99a7f12ca9d
+        <div class="card">
+            <b>Model yang Digunakan</b>
+            <p style="margin:0.5rem 0 0.4rem 0; font-weight:600;">CNN Custom</p>
+            <p style="margin:0;">Model CNN Custom digunakan untuk mengklasifikasikan gambar daun tomat ke dalam
+            kelas kondisi yang telah ditentukan.</p>
+        </div>
+
+        <div class="card">
+            <b>Cakupan Diagnosis</b>
+            <p style="margin:0.5rem 0 0.4rem 0; font-weight:600;">9 penyakit umum dan kondisi sehat</p>
+            <p style="margin:0;">Model mengenali kelas-kelas yang telah ditentukan pada dataset. Daftar lengkapnya
+            dapat dilihat pada halaman Diagnosis.</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
+<<<<<<< HEAD
     with st.expander("Lihat rincian keyakinan untuk semua kelas"):
         order = np.argsort(probs)[::-1]
         bars = []
@@ -404,3 +641,63 @@ with st.expander("🕓 Riwayat versi aplikasi"):
     st.markdown(version_html, unsafe_allow_html=True)
 
 st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 5")
+=======
+    rows = []
+    for v in VERSION_LOG:
+        rows.append(
+            f'<tr><td style="font-weight:600;">{v["versi"]}</td>'
+            f'<td>{v["tanggal"]}</td>'
+            f'<td>{v["perubahan"]}</td></tr>'
+        )
+    table_html = (
+        '<table class="version-table">'
+        '<tr><th>Versi</th><th>Tanggal</th><th>Perubahan</th></tr>'
+        + "".join(rows) +
+        '</table>'
+    )
+    st.markdown(
+        '<div class="card"><b>Riwayat Versi</b><div style="margin-top:0.8rem;">' + table_html + '</div></div>',
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div class="card">
+            <b>Informasi Aplikasi</b>
+            <p style="margin:0.6rem 0 0 0;">TomaLeaf Dx<br>Model: CNN Custom<br>Nada Thahira Sosa — 2601<br>MBC Lab Week 5</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+# ----------------------------------------------------------------------------
+# SIDEBAR — NAVIGASI UTAMA
+# ----------------------------------------------------------------------------
+with st.sidebar:
+    st.markdown('<div class="sidebar-brand">TomaLeaf Dx</div>', unsafe_allow_html=True)
+
+    if st.button("› Diagnosis", key="nav_diagnosis", use_container_width=True,
+                 type="primary" if st.session_state.page == "diagnosis" else "secondary"):
+        st.session_state.page = "diagnosis"
+        st.rerun()
+
+    if st.button("› Tentang Aplikasi", key="nav_about", use_container_width=True,
+                 type="primary" if st.session_state.page == "about" else "secondary"):
+        st.session_state.page = "about"
+        st.rerun()
+
+    st.markdown("---")
+    theme_label = "Mode: Gelap" if st.session_state.dark_mode else "Mode: Terang"
+    if st.button(f"◐ {theme_label}", key="theme_toggle_btn", use_container_width=True):
+        st.session_state.dark_mode = not st.session_state.dark_mode
+        st.rerun()
+
+# ----------------------------------------------------------------------------
+# ROUTER
+# ----------------------------------------------------------------------------
+if st.session_state.page == "diagnosis":
+    render_diagnosis()
+else:
+    render_about()
+>>>>>>> 51cd4553614f98d82be44994fb1df99a7f12ca9d
