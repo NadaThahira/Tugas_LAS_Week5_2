@@ -159,8 +159,8 @@ st.markdown(
     .card {{ background: {t['card']}; border: 1px solid {t['border']}; border-radius: 14px;
              padding: 1.3rem 1.5rem; margin-bottom: 1rem; color: {t['text']} !important; }}
     .card b, .card p, .card li {{ color: {t['text']} !important; }}
-    .tips-list {{ font-size: 0.88rem; margin: 0.4rem 0 0 0; padding-left: 1.1rem; }}
-    .tips-list li {{ margin-bottom: 0.3rem; }}
+    .tips-list {{ font-size: 0.88rem; margin: 0.4rem 0 0 0; padding-left: 1.3rem; }}
+    .tips-list li {{ margin-bottom: 0.35rem; }}
 
     .result-card {{ border-radius: 14px; padding: 1.5rem 1.6rem; margin: 0.4rem 0 1rem 0; text-align: center; }}
     .result-label {{ font-size: 0.82rem; letter-spacing: 0.5px; opacity: 0.9; text-transform: uppercase; }}
@@ -258,9 +258,7 @@ def is_plant_like(image: Image.Image) -> tuple[bool, float]:
     arr = np.array(img).astype("float32")
     r, g, b = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2]
 
-    # Hijau daun: G dominan dibanding R dan B
     green_mask = (g > r * 1.05) & (g > b * 1.05)
-    # Coklat/kuning (daun kering/bercak): R & G tinggi, B rendah, tidak terlalu gelap/terang
     brown_yellow_mask = (r > b * 1.15) & (g > b * 1.05) & (r > 60) & (r < 230)
 
     plant_mask = green_mask | brown_yellow_mask
@@ -312,11 +310,11 @@ def render_diagnosis():
                 """
                 <div class="card">
                 <b>Panduan Penggunaan</b>
-                <ul class="tips-list">
-                    <li>Klik kotak di atas, atau tarik & lepas foto daun tomat.</li>
+                <ol class="tips-list">
+                    <li>Klik kotak di atas, atau tarik &amp; lepas foto daun tomat.</li>
                     <li>Ambil foto <b>close-up 1 daun</b>, cahaya cukup, latar polos.</li>
                     <li>Konfirmasi foto, baru sistem mendiagnosa dan kasih saran penanganan.</li>
-                </ul>
+                </ol>
                 </div>
                 """,
                 unsafe_allow_html=True,
