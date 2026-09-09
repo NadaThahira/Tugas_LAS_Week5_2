@@ -100,8 +100,8 @@ DISEASE_INFO = {
 }
 
 VERSION_LOG = [
-    {"versi": "v1.0", "tanggal": "2026-09-08", "perubahan": "Rilis awal: Implementasi alur multi-halaman (tampilan upload, proses, dan hasil inferensi terpisah) dengan output prediksi berupa teks persentase keyakinan."},
-    {"versi": "v2.0", "tanggal": "2026-08-29", "perubahan": "To be continue"},
+    {"versi": "v1.0", "tanggal": "2026-09-08", "perubahan": "Rilis awal: Implementasi alur upload foto, konfirmasi foto, proses diagnosis, dan tampilan hasil diagnosis."},
+    {"versi": "v2.0", "tanggal": "2026-09-09", "perubahan": "Pengembangan navigasi dan validasi: penambahan sidebar untuk memisahkan halaman Diagnosis dan Tentang Aplikasi, penambahan informasi aplikasi, serta validasi gambar sebelum proses diagnosis."},
     {"versi": "v3.0", "tanggal": "2026-09-08", "perubahan": "To be continue."},
 ]
 
@@ -197,6 +197,8 @@ st.markdown(
     }}
     [data-testid="stExpander"] {{ background: {t['card']} !important; border: 1px solid {t['border']} !important; border-radius: 12px !important; }}
     [data-testid="stExpander"] summary, [data-testid="stExpander"] summary * {{ color: {t['text']} !important; }}
+    [data-testid="stExpander"] summary, [data-testid="stExpander"] summary p, [data-testid="stExpander"] summary span,
+    [data-testid="stExpander"] summary div {{ font-weight: 700 !important; font-size: 1.05rem !important; }}
     [data-testid="stExpander"] p, [data-testid="stExpander"] li, [data-testid="stExpander"] span {{ color: {t['text']} !important; }}
 
     /* Perkuat kontras teks tombol (beberapa versi Streamlit bungkus label di elemen anak) */
