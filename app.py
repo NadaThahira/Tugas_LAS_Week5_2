@@ -1,7 +1,7 @@
 """
 TomaLeaf Dx — Smart Diagnosis for Tomato Leaf Diseases
 Deployment model: CNN Custom
-Nada Thahira Sosa — 2601 — MBC Lab Week 5
+Nada Thahira Sosa — 5601 — MBC Lab Week 5
 """
 
 import numpy as np
@@ -438,7 +438,7 @@ def render_diagnosis():
         list_html = '<div class="scroll-box">' + "".join(cards) + "</div>"
         st.markdown(list_html, unsafe_allow_html=True)
 
-    st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 5")
+    st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 2")
 
 
 # ----------------------------------------------------------------------------
@@ -496,7 +496,7 @@ def render_about():
         """
         <div class="card">
             <b>Informasi Aplikasi</b>
-            <p style="margin:0.6rem 0 0 0;">TomaLeaf Dx<br>Model: CNN Custom<br>Nada Thahira Sosa — 2601<br>MBC Lab Week 5</p>
+            <p style="margin:0.6rem 0 0 0;">TomaLeaf Dx<br>Model: CNN Custom<br>Nada Thahira Sosa — 2601<br>MBC Lab Week 2</p>
         </div>
         """,
         unsafe_allow_html=True,
