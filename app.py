@@ -21,6 +21,7 @@ st.set_page_config(
 
 IMG_SIZE = (224, 224)
 MODEL_PATH = "tomato_leaf_best_model.h5"
+LOW_CONFIDENCE_THRESHOLD = 0.60
 
 CLASSES = [
     "Tomato___Bacterial_spot",
@@ -99,10 +100,9 @@ DISEASE_INFO = {
 }
 
 VERSION_LOG = [
-    {"versi": "v1.0", "tanggal": "2026-08-25", "perubahan": "Rilis awal: upload gambar, pilih model, tampilkan kelas prediksi & confidence dalam bentuk teks."},
-    {"versi": "v2.0", "tanggal": "2026-08-29", "perubahan": "Tambah mode bandingkan 2 model side-by-side, bar chart confidence per kelas, kartu info penyakit berwarna."},
-    {"versi": "v3.0", "tanggal": "2026-09-08", "perubahan": "Sederhanakan jadi 1 model (CNN Custom), alur single-page 3 langkah, dan toggle mode terang/gelap dengan kontras warna yang eksplisit."},
-    {"versi": "v5.0 (final)", "tanggal": "2026-09-08", "perubahan": "Tambah langkah konfirmasi sebelum diagnosa (bukan auto-proses), pisahkan tampilan Proses & Hasil, batasi ukuran preview foto, perbaiki kontras tombol, dan bikin daftar penyakit bisa di-scroll dalam 1 area tanpa memotong konteks."},
+    {"versi": "v1.0", "tanggal": "2026-09-08", "perubahan": "Rilis awal: Implementasi alur multi-halaman (tampilan upload, proses, dan hasil inferensi terpisah) dengan output prediksi berupa teks persentase keyakinan."},
+    {"versi": "v2.0", "tanggal": "2026-08-29", "perubahan": "To be continue"},
+    {"versi": "v3.0", "tanggal": "2026-09-08", "perubahan": "To be continue."},
 ]
 
 # ----------------------------------------------------------------------------
@@ -212,6 +212,7 @@ st.markdown(
     section[data-testid="stSidebar"] {{ background: {t['card']} !important; border-right: 1px solid {t['border']}; }}
     section[data-testid="stSidebar"] * {{ color: {t['text']} !important; }}
     .sidebar-brand {{ font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; padding: 0.3rem 0 1rem 0; }}
+    section[data-testid="stSidebar"] hr {{ border-color: {t['border']} !important; border-top: 1px solid {t['border']} !important; opacity: 1 !important; margin: 1rem 0 !important; }}
     section[data-testid="stSidebar"] .stButton button {{
         background: transparent !important; color: {t['text']} !important; border: none !important;
         text-align: left !important; justify-content: flex-start !important; font-weight: 500 !important;
@@ -221,6 +222,12 @@ st.markdown(
     section[data-testid="stSidebar"] .stButton button:hover {{ background: {t['track']} !important; }}
     section[data-testid="stSidebar"] div[data-testid="baseButton-primary"] button {{ background: {t['primary']} !important; }}
     section[data-testid="stSidebar"] div[data-testid="baseButton-primary"] button p {{ color: {t['primary_text']} !important; font-weight: 600 !important; }}
+
+    /* Tabel riwayat versi */
+    .version-table {{ width: 100%; border-collapse: collapse; font-size: 0.88rem; }}
+    .version-table th {{ text-align: left; padding: 0.5rem 0.6rem; border-bottom: 2px solid {t['border']}; color: {t['muted']} !important; font-weight: 600; }}
+    .version-table td {{ padding: 0.55rem 0.6rem; border-bottom: 1px solid {t['border']}; vertical-align: top; color: {t['text']} !important; }}
+    .version-table tr:last-child td {{ border-bottom: none; }}
     </style>
     """,
     unsafe_allow_html=True,
@@ -307,8 +314,9 @@ def render_diagnosis():
             st.markdown(
                 """
                 <div class="card" style="text-align:center;">
-                Pastikan foto sudah jelas dan fokus ke daunnya, lalu klik mulai diagnosa.
-                Mau pakai foto lain? Hapus dulu lewat tombol × di atas.
+                <div style="font-size:1.05rem; font-weight:700; margin-bottom:0.5rem;">Konfirmasi Foto</div>
+                <div>Periksa foto sebelum memulai diagnosis.<br>
+                Pastikan daun terlihat jelas dan fokus. Jika ingin mengganti foto, klik tombol × di bagian atas.</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -328,6 +336,20 @@ def render_diagnosis():
         top_class = CLASSES[top_idx]
         info = DISEASE_INFO[top_class]
         color = t[info["tingkat"]]
+        top_conf = probs[top_idx]
+
+        if top_conf < LOW_CONFIDENCE_THRESHOLD:
+            st.markdown(
+                f"""
+                <div class="card" style="border-left:4px solid {t['sedang']};">
+                    <b>Hasil kurang meyakinkan</b>
+                    <p style="margin:0.4rem 0 0 0;">Sistem tidak cukup yakin dengan gambar ini (keyakinan tertinggi hanya {top_conf*100:.1f}%).
+                    Kemungkinan foto bukan daun tomat, terlalu buram, atau pencahayaan kurang jelas.
+                    Coba unggah ulang dengan foto close-up satu daun yang lebih jelas.</p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
         st.markdown(
             f"""
@@ -373,15 +395,21 @@ def render_diagnosis():
             st.session_state.probs = None
             st.rerun()
 
-    with st.expander("📖 Penyakit yang dapat dikenali"):
+    with st.expander("Penyakit yang dapat dikenali"):
+        st.markdown(
+            '<div style="font-weight:700; margin-bottom:0.2rem;">Penyakit yang dapat dikenali</div>'
+            '<div style="font-size:0.88rem; color:{}; margin-bottom:0.8rem;">Daftar mencakup tingkat keparahan penyakit tersebut.</div>'.format(t["muted"]),
+            unsafe_allow_html=True,
+        )
         cards = []
         for cls in CLASSES:
             info = DISEASE_INFO[cls]
             color = t[info["tingkat"]]
+            tag = "" if info["tingkat"] == "sehat" else f'<span style="font-size:0.72rem; color:{color} !important; font-weight:600;"> · {info["tingkat"].upper()}</span>'
             cards.append(
                 f'<div class="card" style="border-left:4px solid {color}; margin-bottom:0.6rem;">'
                 f'<b>{info["nama"]}</b>'
-                f'<span style="font-size:0.72rem; color:{color} !important; font-weight:600;"> · {info["tingkat"].upper()}</span>'
+                f'{tag}'
                 f'</div>'
             )
         list_html = '<div class="scroll-box">' + "".join(cards) + "</div>"
@@ -423,18 +451,23 @@ def render_about():
         unsafe_allow_html=True,
     )
 
-    with st.expander("🕓 Riwayat Versi", expanded=False):
-        rows = []
-        for v in VERSION_LOG:
-            rows.append(
-                f'<div class="version-row">'
-                f'<span class="version-tag">{v["versi"]}</span>'
-                f'<span class="version-date">{v["tanggal"]}</span>'
-                f'<p style="margin:0.3rem 0 0 0;">{v["perubahan"]}</p>'
-                f'</div>'
-            )
-        version_html = '<div class="scroll-box">' + "".join(rows) + "</div>"
-        st.markdown(version_html, unsafe_allow_html=True)
+    rows = []
+    for v in VERSION_LOG:
+        rows.append(
+            f'<tr><td style="font-weight:600;">{v["versi"]}</td>'
+            f'<td>{v["tanggal"]}</td>'
+            f'<td>{v["perubahan"]}</td></tr>'
+        )
+    table_html = (
+        '<table class="version-table">'
+        '<tr><th>Versi</th><th>Tanggal</th><th>Perubahan</th></tr>'
+        + "".join(rows) +
+        '</table>'
+    )
+    st.markdown(
+        '<div class="card"><b>Riwayat Versi</b><div style="margin-top:0.8rem;">' + table_html + '</div></div>',
+        unsafe_allow_html=True,
+    )
 
     st.markdown(
         """
@@ -451,20 +484,20 @@ def render_about():
 # SIDEBAR — NAVIGASI UTAMA
 # ----------------------------------------------------------------------------
 with st.sidebar:
-    st.markdown('<div class="sidebar-brand">🌿 TomaLeaf Dx</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-brand">TomaLeaf Dx</div>', unsafe_allow_html=True)
 
-    if st.button("🔍 Diagnosis", key="nav_diagnosis", use_container_width=True,
+    if st.button("› Diagnosis", key="nav_diagnosis", use_container_width=True,
                  type="primary" if st.session_state.page == "diagnosis" else "secondary"):
         st.session_state.page = "diagnosis"
         st.rerun()
 
-    if st.button("ℹ️ Tentang Aplikasi", key="nav_about", use_container_width=True,
+    if st.button("› Tentang Aplikasi", key="nav_about", use_container_width=True,
                  type="primary" if st.session_state.page == "about" else "secondary"):
         st.session_state.page = "about"
         st.rerun()
 
     st.markdown("---")
-    st.toggle("🌙 Mode Gelap", key="dark_mode", help="Mode gelap / terang")
+    st.toggle("Mode Gelap", key="dark_mode", help="Mode gelap / terang")
 
 # ----------------------------------------------------------------------------
 # ROUTER
