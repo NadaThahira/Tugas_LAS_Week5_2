@@ -313,7 +313,7 @@ def render_diagnosis():
                 <ol class="tips-list">
                     <li>Klik kotak di atas, atau tarik &amp; lepas foto daun tomat.</li>
                     <li>Ambil foto <b>close-up 1 daun</b>, cahaya cukup, latar polos.</li>
-                    <li>Konfirmasi foto, baru sistem mendiagnosa dan kasih saran penanganan.</li>
+                    <li>Konfirmasi gambar sebelum sistem melakukan klasifikasi dan menampilkan rekomendasi penanganan.</li>
                 </ol>
                 </div>
                 """,
