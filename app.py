@@ -438,7 +438,7 @@ def render_diagnosis():
         list_html = '<div class="scroll-box">' + "".join(cards) + "</div>"
         st.markdown(list_html, unsafe_allow_html=True)
 
-    st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week "5)
+    st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 5")
 
 
 # ----------------------------------------------------------------------------
