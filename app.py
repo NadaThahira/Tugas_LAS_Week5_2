@@ -1,7 +1,7 @@
 """
 TomaLeaf Dx — Smart Diagnosis for Tomato Leaf Diseases
 Deployment model: CNN Custom
-Nada Thahira Sosa — 5601 — MBC Lab Week 2
+Nada Thahira Sosa — 2601 — MBC Lab Week 5
 """
 
 import numpy as np
@@ -212,7 +212,8 @@ st.markdown(
 
     /* Sidebar navigasi */
     section[data-testid="stSidebar"] {{ background: {t['card']} !important; border-right: 1px solid {t['border']}; }}
-    section[data-testid="stSidebar"] * {{ color: {t['text']} !important; }}
+    section[data-testid="stSidebar"] p, section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] div.sidebar-brand {{ color: {t['text']} !important; }}
     .sidebar-brand {{ font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; padding: 0.3rem 0 1rem 0; }}
     section[data-testid="stSidebar"] hr {{ border-color: {t['border']} !important; border-top: 1px solid {t['border']} !important; opacity: 1 !important; margin: 1rem 0 !important; }}
     section[data-testid="stSidebar"] .stButton button {{
@@ -229,19 +230,6 @@ st.markdown(
     section[data-testid="stSidebar"] button[kind="primary"]:hover p,
     section[data-testid="stSidebar"] button[kind="primary"]:hover div,
     section[data-testid="stSidebar"] button[kind="primary"]:hover span {{ color: {t['primary_text']} !important; }}
-
-    /* Toggle mode gelap/terang — beberapa selector fallback karena struktur internalnya tidak stabil antar versi Streamlit */
-    section[data-testid="stSidebar"] [data-testid="stToggle"] [role="switch"],
-    section[data-testid="stSidebar"] [role="switch"],
-    section[data-testid="stSidebar"] div[data-baseweb="checkbox"] > div:first-child {{
-        background-color: {t['track']} !important;
-        border: 1.5px solid {t['border']} !important;
-    }}
-    section[data-testid="stSidebar"] [role="switch"][aria-checked="true"],
-    section[data-testid="stSidebar"] div[data-baseweb="checkbox"][aria-checked="true"] > div:first-child {{
-        background-color: {t['primary']} !important;
-        border-color: {t['primary']} !important;
-    }}
     section[data-testid="stSidebar"] button[kind="primary"] {{ background: {t['primary']} !important; }}
     section[data-testid="stSidebar"] button[kind="primary"] p,
     section[data-testid="stSidebar"] button[kind="primary"] div,
@@ -451,7 +439,7 @@ def render_diagnosis():
         list_html = '<div class="scroll-box">' + "".join(cards) + "</div>"
         st.markdown(list_html, unsafe_allow_html=True)
 
-    st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 2")
+    st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 5")
 
 
 # ----------------------------------------------------------------------------
@@ -509,7 +497,7 @@ def render_about():
         """
         <div class="card">
             <b>Informasi Aplikasi</b>
-            <p style="margin:0.6rem 0 0 0;">TomaLeaf Dx<br>Model: CNN Custom<br>Nada Thahira Sosa — 2601<br>MBC Lab Week 2</p>
+            <p style="margin:0.6rem 0 0 0;">TomaLeaf Dx<br>Model: CNN Custom<br>Nada Thahira Sosa — 2601<br>MBC Lab Week 5</p>
         </div>
         """,
         unsafe_allow_html=True,
