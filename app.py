@@ -1,7 +1,7 @@
 """
-TaniLens — Diagnosa Penyakit Daun Tomat
+TomaLeaf Dx — Smart Diagnosis for Tomato Leaf Diseases
 Deployment model: CNN Custom
-Nada Thahira Sosa — 2601 — MBC Lab Week 2
+Nada Thahira Sosa — 2601 — MBC Lab Week 5
 """
 
 import numpy as np
@@ -13,14 +13,14 @@ import tensorflow as tf
 # KONFIGURASI HALAMAN
 # ----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="TaniLens — Diagnosa Daun Tomat",
+    page_title="TomaLeaf Dx — Smart Diagnosis for Tomato Leaf Diseases",
     page_icon="🍅",
     layout="centered",
     initial_sidebar_state="collapsed",
 )
 
 IMG_SIZE = (224, 224)
-MODEL_PATH = "models/custom_cnn.h5"
+MODEL_PATH = "tomato_leaf_best_model.h5"
 
 CLASSES = [
     "Tomato___Bacterial_spot",
@@ -101,7 +101,8 @@ DISEASE_INFO = {
 VERSION_LOG = [
     {"versi": "v1.0", "tanggal": "2026-08-25", "perubahan": "Rilis awal: upload gambar, pilih model, tampilkan kelas prediksi & confidence dalam bentuk teks."},
     {"versi": "v2.0", "tanggal": "2026-08-29", "perubahan": "Tambah mode bandingkan 2 model side-by-side, bar chart confidence per kelas, kartu info penyakit berwarna."},
-    {"versi": "v3.0 (final)", "tanggal": "2026-09-08", "perubahan": "Sederhanakan jadi 1 model (CNN Custom), alur single-page 3 langkah, dan toggle mode terang/gelap dengan kontras warna yang eksplisit."},
+    {"versi": "v3.0", "tanggal": "2026-09-08", "perubahan": "Sederhanakan jadi 1 model (CNN Custom), alur single-page 3 langkah, dan toggle mode terang/gelap dengan kontras warna yang eksplisit."},
+    {"versi": "v5.0 (final)", "tanggal": "2026-09-08", "perubahan": "Tambah langkah konfirmasi sebelum diagnosa (bukan auto-proses), pisahkan tampilan Proses & Hasil, batasi ukuran preview foto, perbaiki kontras tombol, dan bikin daftar penyakit bisa di-scroll dalam 1 area tanpa memotong konteks."},
 ]
 
 # ----------------------------------------------------------------------------
@@ -147,7 +148,8 @@ st.markdown(
     }}
 
     .hero {{ text-align: center; padding: 0.6rem 1rem 0.4rem 1rem; }}
-    .hero-title {{ font-size: 1.9rem; font-weight: 700; margin: 0.3rem 0; color: {t['primary']} !important; }}
+    .hero-title {{ font-size: 1.9rem; font-weight: 700; margin: 0.3rem 0 0.1rem 0; color: {t['primary']} !important; }}
+    .hero-tagline {{ font-size: 0.8rem; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: {t['muted']} !important; margin-bottom: 0.5rem; }}
     .hero-sub {{ font-size: 0.95rem; color: {t['muted']} !important; max-width: 480px; margin: 0 auto; line-height: 1.5; }}
 
     .steps {{ display: flex; justify-content: center; gap: 0.5rem; margin: 1.2rem 0 1.4rem 0; flex-wrap: wrap; }}
@@ -194,6 +196,15 @@ st.markdown(
     [data-testid="stExpander"] {{ background: {t['card']} !important; border: 1px solid {t['border']} !important; border-radius: 12px !important; }}
     [data-testid="stExpander"] summary, [data-testid="stExpander"] summary * {{ color: {t['text']} !important; }}
     [data-testid="stExpander"] p, [data-testid="stExpander"] li, [data-testid="stExpander"] span {{ color: {t['text']} !important; }}
+
+    /* Perkuat kontras teks tombol (beberapa versi Streamlit bungkus label di elemen anak) */
+    .stButton button p, .stButton button div, .stButton button span {{ color: {t['primary_text']} !important; font-weight: 600 !important; }}
+
+    /* Area scroll mandiri supaya 1 konteks selalu utuh dalam 1 kotak, tidak terpotong scroll halaman */
+    .scroll-box {{ max-height: 380px; overflow-y: auto; padding-right: 6px; }}
+
+    /* Batasi lebar preview foto supaya tidak raksasa di layar besar */
+    .preview-wrap img {{ border-radius: 12px; }}
     </style>
     """,
     unsafe_allow_html=True,
@@ -216,7 +227,7 @@ def predict(image: Image.Image):
 
 
 def render_steps(active: int):
-    labels = ["Upload Foto", "Proses", "Lihat Hasil"]
+    labels = ["Upload & Konfirmasi", "Lihat Hasil"]
     html = '<div class="steps">'
     for i, label in enumerate(labels, start=1):
         cls = "active" if i == active else ""
@@ -239,44 +250,79 @@ st.markdown(
     """
     <div class="hero">
         <div style="font-size:2.2rem;">🍅</div>
-        <div class="hero-title">TaniLens</div>
-        <div class="hero-sub">Foto daun tomatmu, sistem langsung mendeteksi apakah sehat atau
-        terkena salah satu dari 9 penyakit umum — lengkap dengan saran penanganannya.</div>
+        <div class="hero-title">TomaLeaf Dx</div>
+        <div class="hero-tagline">Smart Diagnosis for Tomato Leaf Diseases</div>
+        <div class="hero-sub">Penasaran dengan kondisi daun tomatmu? Upload fotonya untuk mengetahui
+        apakah sehat atau terkena salah satu dari 9 penyakit umum, lengkap dengan saran penanganannya.</div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-uploaded = st.file_uploader(" ", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
+# ----------------------------------------------------------------------------
+# STATE ALUR: 1 = upload + konfirmasi (1 halaman), 2 = hasil
+# ----------------------------------------------------------------------------
+if "stage" not in st.session_state:
+    st.session_state.stage = 1
+if "image_bytes" not in st.session_state:
+    st.session_state.image_bytes = None
+if "probs" not in st.session_state:
+    st.session_state.probs = None
+
+render_steps(st.session_state.stage)
 
 # ----------------------------------------------------------------------------
-# ALUR UTAMA: 3 LANGKAH
+# TAHAP 1: UPLOAD + PREVIEW + KONFIRMASI (1 halaman, tanpa halaman "Proses" terpisah)
 # ----------------------------------------------------------------------------
-if uploaded is None:
-    render_steps(1)
-    st.markdown(
-        """
-        <div class="card">
-        <b>Cara pakai (30 detik):</b>
-        <ul class="tips-list">
-            <li>Klik kotak di atas, atau tarik & lepas foto daun tomat.</li>
-            <li>Ambil foto <b>close-up 1 daun</b>, cahaya cukup, latar polos.</li>
-            <li>Hasil diagnosa & saran penanganan langsung muncul otomatis.</li>
-        </ul>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-else:
-    image = Image.open(uploaded)
-    render_steps(2)
-    st.image(image, use_container_width=True, caption="Foto yang kamu unggah")
+if st.session_state.stage == 1:
+    uploaded = st.file_uploader(" ", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
 
-    with st.spinner("Sedang menganalisis daun..."):
-        probs = predict(image)
+    if uploaded is None:
+        st.markdown(
+            """
+            <div class="card">
+            <b>Cara pakai (30 detik):</b>
+            <ul class="tips-list">
+                <li>Klik kotak di atas, atau tarik & lepas foto daun tomat.</li>
+                <li>Ambil foto <b>close-up 1 daun</b>, cahaya cukup, latar polos.</li>
+                <li>Konfirmasi foto, baru sistem mendiagnosa dan kasih saran penanganan.</li>
+            </ul>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        image = Image.open(uploaded)
 
-    render_steps(3)
+        col_l, col_mid, col_r = st.columns([1, 2, 1])
+        with col_mid:
+            st.markdown('<div class="preview-wrap">', unsafe_allow_html=True)
+            st.image(image, use_column_width=True, caption="Preview foto")
+            st.markdown("</div>", unsafe_allow_html=True)
 
+        st.markdown(
+            """
+            <div class="card" style="text-align:center;">
+            Pastikan foto sudah jelas dan fokus ke daunnya, lalu klik mulai diagnosa.
+            Mau pakai foto lain? Hapus dulu lewat tombol × di atas.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        if st.button("Mulai Diagnosa →", type="primary", use_container_width=True):
+            with st.spinner("Sedang menganalisis daun..."):
+                probs = predict(image)
+            st.session_state.image_bytes = uploaded.getvalue()
+            st.session_state.probs = probs.tolist()
+            st.session_state.stage = 2
+            st.rerun()
+
+# ----------------------------------------------------------------------------
+# TAHAP 2: HASIL — halaman terpisah dari upload/konfirmasi
+# ----------------------------------------------------------------------------
+elif st.session_state.stage == 2:
+    probs = np.array(st.session_state.probs)
     top_idx = int(np.argmax(probs))
     top_class = CLASSES[top_idx]
     info = DISEASE_INFO[top_class]
@@ -284,7 +330,7 @@ else:
 
     st.markdown(
         f"""
-        <div class="result-card" style="background:{color}; color:{t['primary_text'] if st.session_state.dark_mode else '#FFFFFF'};">
+        <div class="result-card" style="background:{color}; color:#FFFFFF;">
             <div class="result-label">Hasil Diagnosa</div>
             <div class="result-name">{info['nama']}</div>
             <div class="result-conf">Tingkat keyakinan model: {probs[top_idx]*100:.1f}%</div>
@@ -306,50 +352,55 @@ else:
 
     with st.expander("Lihat rincian keyakinan untuk semua kelas"):
         order = np.argsort(probs)[::-1]
-        bars_html = ""
+        bars = []
         for i in order:
             pct = probs[i] * 100
-            bars_html += f"""
-            <div class="barrow">
-                <div class="barrow-label">{DISEASE_INFO[CLASSES[i]]['nama']}</div>
-                <div class="barrow-track"><div class="barrow-fill" style="width:{pct:.1f}%; background:{t[DISEASE_INFO[CLASSES[i]]['tingkat']]};"></div></div>
-                <div class="barrow-pct">{pct:.1f}%</div>
-            </div>
-            """
+            cls_i = CLASSES[i]
+            bars.append(
+                f'<div class="barrow">'
+                f'<div class="barrow-label">{DISEASE_INFO[cls_i]["nama"]}</div>'
+                f'<div class="barrow-track"><div class="barrow-fill" style="width:{pct:.1f}%; background:{t[DISEASE_INFO[cls_i]["tingkat"]]};"></div></div>'
+                f'<div class="barrow-pct">{pct:.1f}%</div>'
+                f'</div>'
+            )
+        bars_html = '<div class="scroll-box">' + "".join(bars) + "</div>"
         st.markdown(bars_html, unsafe_allow_html=True)
 
-    if st.button("🔄 Coba foto lain", use_container_width=True):
+    if st.button("↻ Coba Foto Lain", use_container_width=True):
+        st.session_state.stage = 1
+        st.session_state.image_bytes = None
+        st.session_state.probs = None
         st.rerun()
 
 # ----------------------------------------------------------------------------
-# INFO TAMBAHAN
+# INFO TAMBAHAN — tetap ada di semua tahap, tidak ganggu alur utama
 # ----------------------------------------------------------------------------
 with st.expander("📖 Daftar penyakit yang bisa dikenali"):
+    cards = []
     for cls in CLASSES:
         info = DISEASE_INFO[cls]
         color = t[info["tingkat"]]
-        st.markdown(
-            f"""
-            <div class="card" style="border-left:4px solid {color}; margin-bottom:0.6rem;">
-                <b>{info['nama']}</b>
-                <span style="font-size:0.72rem; color:{color} !important; font-weight:600;"> · {info['tingkat'].upper()}</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
+        cards.append(
+            f'<div class="card" style="border-left:4px solid {color}; margin-bottom:0.6rem;">'
+            f'<b>{info["nama"]}</b>'
+            f'<span style="font-size:0.72rem; color:{color} !important; font-weight:600;"> · {info["tingkat"].upper()}</span>'
+            f'</div>'
         )
+    list_html = '<div class="scroll-box">' + "".join(cards) + "</div>"
+    st.markdown(list_html, unsafe_allow_html=True)
 
 with st.expander("🕓 Riwayat versi aplikasi"):
     st.caption("Tambahkan screenshot versi sebelumnya di folder `docs/screenshots/` lalu tampilkan dengan `st.image()` di sini.")
+    rows = []
     for v in VERSION_LOG:
-        st.markdown(
-            f"""
-            <div class="version-row">
-                <span class="version-tag">{v['versi']}</span>
-                <span class="version-date">{v['tanggal']}</span>
-                <p style="margin:0.3rem 0 0 0;">{v['perubahan']}</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
+        rows.append(
+            f'<div class="version-row">'
+            f'<span class="version-tag">{v["versi"]}</span>'
+            f'<span class="version-date">{v["tanggal"]}</span>'
+            f'<p style="margin:0.3rem 0 0 0;">{v["perubahan"]}</p>'
+            f'</div>'
         )
+    version_html = '<div class="scroll-box">' + "".join(rows) + "</div>"
+    st.markdown(version_html, unsafe_allow_html=True)
 
-st.caption("TaniLens · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 2")
+st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 5")
