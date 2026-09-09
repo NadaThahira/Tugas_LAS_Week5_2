@@ -1,7 +1,7 @@
 """
 TomaLeaf Dx — Smart Diagnosis for Tomato Leaf Diseases
 Deployment model: CNN Custom
-Nada Thahira Sosa — 5601 — MBC Lab Week 5
+Nada Thahira Sosa — 5601 — MBC Lab Week 2
 """
 
 import numpy as np
@@ -229,6 +229,19 @@ st.markdown(
     section[data-testid="stSidebar"] button[kind="primary"]:hover p,
     section[data-testid="stSidebar"] button[kind="primary"]:hover div,
     section[data-testid="stSidebar"] button[kind="primary"]:hover span {{ color: {t['primary_text']} !important; }}
+
+    /* Toggle mode gelap/terang — beberapa selector fallback karena struktur internalnya tidak stabil antar versi Streamlit */
+    section[data-testid="stSidebar"] [data-testid="stToggle"] [role="switch"],
+    section[data-testid="stSidebar"] [role="switch"],
+    section[data-testid="stSidebar"] div[data-baseweb="checkbox"] > div:first-child {{
+        background-color: {t['track']} !important;
+        border: 1.5px solid {t['border']} !important;
+    }}
+    section[data-testid="stSidebar"] [role="switch"][aria-checked="true"],
+    section[data-testid="stSidebar"] div[data-baseweb="checkbox"][aria-checked="true"] > div:first-child {{
+        background-color: {t['primary']} !important;
+        border-color: {t['primary']} !important;
+    }}
     section[data-testid="stSidebar"] button[kind="primary"] {{ background: {t['primary']} !important; }}
     section[data-testid="stSidebar"] button[kind="primary"] p,
     section[data-testid="stSidebar"] button[kind="primary"] div,
