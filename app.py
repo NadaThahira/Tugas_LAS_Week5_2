@@ -100,8 +100,8 @@ DISEASE_INFO = {
 }
 
 VERSION_LOG = [
-    {"versi": "v1.0", "tanggal": "2026-09-08", "perubahan": "Rilis awal: Implementasi alur upload foto, konfirmasi foto, proses diagnosis, dan tampilan hasil diagnosis."},
-    {"versi": "v2.0", "tanggal": "2026-09-09", "perubahan": "Pengembangan navigasi dan validasi: penambahan sidebar untuk memisahkan halaman Diagnosis dan Tentang Aplikasi, penambahan informasi aplikasi, serta validasi gambar sebelum proses diagnosis."},
+    {"versi": "v1.0", "tanggal": "2026-09-08", "perubahan": "Rilis awal: Implementasi alur multi-halaman (tampilan upload, proses, dan hasil inferensi terpisah) dengan output prediksi berupa teks persentase keyakinan."},
+    {"versi": "v2.0", "tanggal": "2026-08-29", "perubahan": "To be continue"},
     {"versi": "v3.0", "tanggal": "2026-09-08", "perubahan": "To be continue."},
 ]
 
@@ -222,14 +222,19 @@ st.markdown(
     }}
     section[data-testid="stSidebar"] .stButton button p {{ color: {t['text']} !important; font-weight: 500 !important; text-align: left !important; }}
     section[data-testid="stSidebar"] .stButton button:hover {{ background: {t['track']} !important; }}
-    section[data-testid="stSidebar"] div[data-testid="baseButton-primary"] button {{ background: {t['primary']} !important; }}
-    section[data-testid="stSidebar"] div[data-testid="baseButton-primary"] button p {{ color: {t['primary_text']} !important; font-weight: 600 !important; }}
+    section[data-testid="stSidebar"] button[kind="primary"] {{ background: {t['primary']} !important; }}
+    section[data-testid="stSidebar"] button[kind="primary"] p,
+    section[data-testid="stSidebar"] button[kind="primary"] div,
+    section[data-testid="stSidebar"] button[kind="primary"] span {{ color: {t['primary_text']} !important; font-weight: 600 !important; }}
 
     /* Tabel riwayat versi */
-    .version-table {{ width: 100%; border-collapse: collapse; font-size: 0.88rem; }}
+    .version-table {{ width: 100%; border-collapse: collapse; font-size: 0.88rem; table-layout: fixed; }}
     .version-table th {{ text-align: left; padding: 0.5rem 0.6rem; border-bottom: 2px solid {t['border']}; color: {t['muted']} !important; font-weight: 600; }}
     .version-table td {{ padding: 0.55rem 0.6rem; border-bottom: 1px solid {t['border']}; vertical-align: top; color: {t['text']} !important; }}
     .version-table tr:last-child td {{ border-bottom: none; }}
+    .version-table th:nth-child(1), .version-table td:nth-child(1) {{ width: 14%; }}
+    .version-table th:nth-child(2), .version-table td:nth-child(2) {{ width: 22%; white-space: nowrap; }}
+    .version-table th:nth-child(3), .version-table td:nth-child(3) {{ width: 64%; }}
     </style>
     """,
     unsafe_allow_html=True,
