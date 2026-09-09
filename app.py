@@ -521,7 +521,10 @@ with st.sidebar:
         st.rerun()
 
     st.markdown("---")
-    st.toggle("Mode Gelap", key="dark_mode", help="Mode gelap / terang")
+    theme_label = "Mode: Gelap" if st.session_state.dark_mode else "Mode: Terang"
+    if st.button(f"◐ {theme_label}", key="theme_toggle_btn", use_container_width=True):
+        st.session_state.dark_mode = not st.session_state.dark_mode
+        st.rerun()
 
 # ----------------------------------------------------------------------------
 # ROUTER
