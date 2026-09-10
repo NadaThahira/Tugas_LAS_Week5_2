@@ -1,7 +1,6 @@
 """
 TomaLeaf Dx — Smart Diagnosis for Tomato Leaf Diseases
 Deployment model: CNN Custom
-Nada Thahira Sosa — 2601 — MBC Lab Week 5
 """
 
 import numpy as np
@@ -211,6 +210,16 @@ st.markdown(
     section[data-testid="stSidebar"] div.sidebar-brand {{ color: {t['text']} !important; }}
     .sidebar-brand {{ font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; padding: 0.3rem 0 1rem 0; }}
     section[data-testid="stSidebar"] hr {{ border-color: {t['border']} !important; border-top: 1px solid {t['border']} !important; opacity: 1 !important; margin: 1rem 0 !important; }}
+
+    /* Tombol collapse/expand sidebar (ikon panah) — beberapa selector fallback */
+    [data-testid="stSidebarCollapseButton"] svg, [data-testid="collapsedControl"] svg,
+    button[kind="header"] svg, [data-testid="baseButton-header"] svg {{
+        fill: {t['text']} !important; color: {t['text']} !important;
+    }}
+    [data-testid="stSidebarCollapseButton"], [data-testid="collapsedControl"],
+    button[kind="header"], [data-testid="baseButton-header"] {{
+        background: {t['card']} !important; border-radius: 8px !important;
+    }}
     section[data-testid="stSidebar"] .stButton button {{
         background: transparent !important; color: {t['text']} !important; border: none !important;
         text-align: left !important; justify-content: flex-start !important; font-weight: 500 !important;
@@ -424,7 +433,7 @@ def render_diagnosis():
         list_html = '<div class="scroll-box">' + "".join(cards) + "</div>"
         st.markdown(list_html, unsafe_allow_html=True)
 
-    st.caption("TomaLeaf Dx · Model: CNN Custom · Nada Thahira Sosa — 2601 · MBC Lab Week 5")
+    st.caption("TomaLeaf Dx · Model: CNN Custom · Tomato Leaf Disease Diagnosis")
 
 
 # ----------------------------------------------------------------------------
@@ -444,10 +453,16 @@ def render_about():
         </div>
 
         <div class="card">
-            <b>Model yang Digunakan</b>
-            <p style="margin:0.5rem 0 0.4rem 0; font-weight:600;">CNN Custom</p>
-            <p style="margin:0;">Model CNN Custom digunakan untuk mengklasifikasikan gambar daun tomat ke dalam
-            kelas kondisi yang telah ditentukan.</p>
+            <b>Konfigurasi Model</b>
+            <p style="margin:0.5rem 0 0.4rem 0; font-weight:600;">CNN Custom (CustomCNN_TomatoLeaf)</p>
+            <ul class="tips-list">
+                <li>Arsitektur: 4 blok konvolusi (32 → 64 → 128 → 256 filter), masing-masing berisi 2 lapisan Conv2D + Batch Normalization + ReLU, diikuti MaxPooling.</li>
+                <li>Classifier head: Global Average Pooling → Dense(128, ReLU) → Dropout(0.4) → Dense(10, Softmax).</li>
+                <li>Ukuran input: 224 × 224 piksel (RGB).</li>
+                <li>Optimizer: Adam (learning rate 0.001), loss function: categorical crossentropy.</li>
+                <li>Pelatihan menggunakan augmentasi data (rotasi, pergeseran, zoom, flip horizontal) dengan EarlyStopping dan ReduceLROnPlateau.</li>
+                <li>Performa pada data validasi: Accuracy 94,10%, F1-Score (macro) 94,09%.</li>
+            </ul>
         </div>
 
         <div class="card">
@@ -464,7 +479,7 @@ def render_about():
         """
         <div class="card">
             <b>Informasi Aplikasi</b>
-            <p style="margin:0.6rem 0 0 0;">TomaLeaf Dx<br>Model: CNN Custom<br>Nada Thahira Sosa — 2601<br>MBC Lab Week 5</p>
+            <p style="margin:0.6rem 0 0 0;">Project: TomaLeaf Dx<br>Kategori: Tomato Leaf Disease Diagnosis<br>Model: CNN Custom</p>
         </div>
         """,
         unsafe_allow_html=True,
