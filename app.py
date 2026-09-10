@@ -163,17 +163,11 @@ st.markdown(
 
     /* Spec sheet untuk konfigurasi model */
     .card-eyebrow {{ font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {t['primary']} !important; margin-bottom: 0.3rem; }}
-    .model-name {{ font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; color: {t['text']} !important; margin-bottom: 0.9rem; }}
+    .model-name {{ font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; color: {t['text']} !important; margin-bottom: 1rem; }}
 
-    .spec-row {{ display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; padding: 0.65rem 0; border-bottom: 1px solid {t['border']}; }}
-    .spec-row:last-child {{ border-bottom: none; }}
-    .spec-label {{ flex: 0 0 130px; font-size: 0.74rem; font-weight: 700; color: {t['muted']} !important; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 0.15rem; }}
-    .spec-value {{ flex: 1; min-width: 200px; font-size: 0.9rem; color: {t['text']} !important; line-height: 1.55; }}
-
-    .stat-row {{ display: flex; gap: 0.7rem; margin-top: 1.1rem; }}
-    .stat-box {{ flex: 1; background: {t['track']}; border-radius: 10px; padding: 0.9rem 0.8rem; text-align: center; }}
-    .stat-number {{ font-family: 'Fraunces', serif; font-size: 1.55rem; font-weight: 700; color: {t['primary']} !important; line-height: 1.1; }}
-    .stat-label {{ font-size: 0.72rem; color: {t['muted']} !important; margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 0.03em; }}
+    .spec-grid {{ display: grid; grid-template-columns: 1fr 1fr; row-gap: 1rem; column-gap: 1.5rem; }}
+    .spec-cell-label {{ font-size: 0.72rem; font-weight: 700; color: {t['muted']} !important; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }}
+    .spec-cell-value {{ font-size: 0.95rem; font-weight: 600; color: {t['text']} !important; }}
 
     .result-card {{ border-radius: 14px; padding: 1.5rem 1.6rem; margin: 0.4rem 0 1rem 0; text-align: center; }}
     .result-label {{ font-size: 0.82rem; letter-spacing: 0.5px; opacity: 0.9; text-transform: uppercase; }}
@@ -470,35 +464,30 @@ def render_about():
             <div class="card-eyebrow">Konfigurasi Model</div>
             <div class="model-name">CNN Custom</div>
 
-            <div class="spec-row">
-                <div class="spec-label">Arsitektur</div>
-                <div class="spec-value">Empat blok konvolusi berurutan dengan jumlah filter yang terus bertambah (32, 64, 128, hingga 256), sehingga model belajar mengenali pola visual daun secara bertahap — dari tekstur sederhana hingga pola bercak yang lebih kompleks.</div>
-            </div>
-            <div class="spec-row">
-                <div class="spec-label">Klasifikasi Akhir</div>
-                <div class="spec-value">Sebagian nilai diabaikan secara acak selama pelatihan untuk mencegah model menghafal data, sebelum akhirnya menentukan salah satu dari 10 kondisi daun.</div>
-            </div>
-            <div class="spec-row">
-                <div class="spec-label">Ukuran Input</div>
-                <div class="spec-value">224 × 224 piksel, gambar berwarna (RGB).</div>
-            </div>
-            <div class="spec-row">
-                <div class="spec-label">Pembelajaran</div>
-                <div class="spec-value">Dioptimalkan dengan algoritma Adam, dengan tingkat kesalahan diukur menggunakan categorical crossentropy.</div>
-            </div>
-            <div class="spec-row">
-                <div class="spec-label">Strategi Training</div>
-                <div class="spec-value">Data latih diperkaya lewat augmentasi (rotasi, pergeseran, zoom, flip horizontal), dan pelatihan dihentikan otomatis saat performa tidak lagi meningkat.</div>
-            </div>
-
-            <div class="stat-row">
-                <div class="stat-box">
-                    <div class="stat-number">94.10%</div>
-                    <div class="stat-label">Accuracy</div>
+            <div class="spec-grid">
+                <div>
+                    <div class="spec-cell-label">Arsitektur</div>
+                    <div class="spec-cell-value">CNN bertingkat (4 blok)</div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-number">94.09%</div>
-                    <div class="stat-label">F1-Score (Macro)</div>
+                <div>
+                    <div class="spec-cell-label">Klasifikasi</div>
+                    <div class="spec-cell-value">10 kelas</div>
+                </div>
+                <div>
+                    <div class="spec-cell-label">Input</div>
+                    <div class="spec-cell-value">224 × 224 RGB</div>
+                </div>
+                <div>
+                    <div class="spec-cell-label">Optimizer</div>
+                    <div class="spec-cell-value">Adam</div>
+                </div>
+                <div>
+                    <div class="spec-cell-label">Output</div>
+                    <div class="spec-cell-value">9 Penyakit + Sehat</div>
+                </div>
+                <div>
+                    <div class="spec-cell-label">Pembelajaran</div>
+                    <div class="spec-cell-value">Dilatih dari awal</div>
                 </div>
             </div>
         </div>
