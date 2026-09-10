@@ -163,14 +163,12 @@ st.markdown(
 
     /* Spec sheet untuk konfigurasi model */
     .card-eyebrow {{ font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {t['primary']} !important; margin-bottom: 0.3rem; }}
-    .model-name {{ font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; color: {t['text']} !important; }}
-    .model-subtitle {{ font-family: 'Courier New', monospace; font-size: 0.78rem; color: {t['muted']} !important; margin: 0.15rem 0 1rem 0; }}
+    .model-name {{ font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; color: {t['text']} !important; margin-bottom: 0.9rem; }}
 
     .spec-row {{ display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; padding: 0.65rem 0; border-bottom: 1px solid {t['border']}; }}
     .spec-row:last-child {{ border-bottom: none; }}
     .spec-label {{ flex: 0 0 130px; font-size: 0.74rem; font-weight: 700; color: {t['muted']} !important; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 0.15rem; }}
     .spec-value {{ flex: 1; min-width: 200px; font-size: 0.9rem; color: {t['text']} !important; line-height: 1.55; }}
-    .spec-value code {{ background: {t['track']}; padding: 0.05rem 0.35rem; border-radius: 4px; font-size: 0.85em; }}
 
     .stat-row {{ display: flex; gap: 0.7rem; margin-top: 1.1rem; }}
     .stat-box {{ flex: 1; background: {t['track']}; border-radius: 10px; padding: 0.9rem 0.8rem; text-align: center; }}
@@ -471,31 +469,26 @@ def render_about():
         <div class="card">
             <div class="card-eyebrow">Konfigurasi Model</div>
             <div class="model-name">CNN Custom</div>
-            <div class="model-subtitle">CustomCNN_TomatoLeaf</div>
 
             <div class="spec-row">
                 <div class="spec-label">Arsitektur</div>
-                <div class="spec-value">4 blok konvolusi (<code>32 → 64 → 128 → 256</code> filter) — tiap blok berisi 2× Conv2D + Batch Normalization + ReLU, diikuti MaxPooling.</div>
+                <div class="spec-value">Empat blok konvolusi berurutan dengan jumlah filter yang terus bertambah (32, 64, 128, hingga 256), sehingga model belajar mengenali pola visual daun secara bertahap — dari tekstur sederhana hingga pola bercak yang lebih kompleks.</div>
             </div>
             <div class="spec-row">
-                <div class="spec-label">Classifier Head</div>
-                <div class="spec-value">Global Average Pooling → Dense(128, ReLU) → Dropout(0.4) → Dense(10, Softmax)</div>
+                <div class="spec-label">Klasifikasi Akhir</div>
+                <div class="spec-value">Sebagian nilai diabaikan secara acak selama pelatihan untuk mencegah model menghafal data, sebelum akhirnya menentukan salah satu dari 10 kondisi daun.</div>
             </div>
             <div class="spec-row">
                 <div class="spec-label">Ukuran Input</div>
-                <div class="spec-value">224 × 224 piksel (RGB)</div>
+                <div class="spec-value">224 × 224 piksel, gambar berwarna (RGB).</div>
             </div>
             <div class="spec-row">
-                <div class="spec-label">Optimizer</div>
-                <div class="spec-value">Adam · learning rate <code>0.001</code></div>
-            </div>
-            <div class="spec-row">
-                <div class="spec-label">Loss Function</div>
-                <div class="spec-value">Categorical Crossentropy</div>
+                <div class="spec-label">Pembelajaran</div>
+                <div class="spec-value">Dioptimalkan dengan algoritma Adam, dengan tingkat kesalahan diukur menggunakan categorical crossentropy.</div>
             </div>
             <div class="spec-row">
                 <div class="spec-label">Strategi Training</div>
-                <div class="spec-value">Augmentasi data (rotasi, pergeseran, zoom, flip horizontal), dikombinasikan dengan EarlyStopping dan ReduceLROnPlateau.</div>
+                <div class="spec-value">Data latih diperkaya lewat augmentasi (rotasi, pergeseran, zoom, flip horizontal), dan pelatihan dihentikan otomatis saat performa tidak lagi meningkat.</div>
             </div>
 
             <div class="stat-row">
