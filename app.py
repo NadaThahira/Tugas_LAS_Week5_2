@@ -163,7 +163,7 @@ st.markdown(
 
     /* Spec sheet untuk konfigurasi model */
     .card-eyebrow {{ font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {t['primary']} !important; margin-bottom: 0.3rem; }}
-    .model-name {{ font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; color: {t['text']} !important; margin-bottom: 1rem; }}
+    .model-name {{ font-size: 0.9rem; font-weight: 500; color: {t['muted']} !important; margin: 0.3rem 0 1rem 0; }}
 
     .spec-grid {{ display: grid; grid-template-columns: 1fr 1fr; row-gap: 1rem; column-gap: 1.5rem; }}
     .spec-cell-label {{ font-size: 0.72rem; font-weight: 700; color: {t['muted']} !important; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }}
@@ -477,7 +477,7 @@ def render_about():
     )
     st.markdown(
         '<div class="card">'
-        '<div class="card-eyebrow">Konfigurasi Model</div>'
+        '<b>Konfigurasi Model</b>'
         '<div class="model-name">CNN Custom</div>'
         f'<div class="spec-grid">{cells_html}</div>'
         '</div>',
