@@ -161,6 +161,22 @@ st.markdown(
     .tips-list {{ font-size: 0.88rem; margin: 0.4rem 0 0 0; padding-left: 1.3rem; }}
     .tips-list li {{ margin-bottom: 0.35rem; }}
 
+    /* Spec sheet untuk konfigurasi model */
+    .card-eyebrow {{ font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {t['primary']} !important; margin-bottom: 0.3rem; }}
+    .model-name {{ font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; color: {t['text']} !important; }}
+    .model-subtitle {{ font-family: 'Courier New', monospace; font-size: 0.78rem; color: {t['muted']} !important; margin: 0.15rem 0 1rem 0; }}
+
+    .spec-row {{ display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; padding: 0.65rem 0; border-bottom: 1px solid {t['border']}; }}
+    .spec-row:last-child {{ border-bottom: none; }}
+    .spec-label {{ flex: 0 0 130px; font-size: 0.74rem; font-weight: 700; color: {t['muted']} !important; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 0.15rem; }}
+    .spec-value {{ flex: 1; min-width: 200px; font-size: 0.9rem; color: {t['text']} !important; line-height: 1.55; }}
+    .spec-value code {{ background: {t['track']}; padding: 0.05rem 0.35rem; border-radius: 4px; font-size: 0.85em; }}
+
+    .stat-row {{ display: flex; gap: 0.7rem; margin-top: 1.1rem; }}
+    .stat-box {{ flex: 1; background: {t['track']}; border-radius: 10px; padding: 0.9rem 0.8rem; text-align: center; }}
+    .stat-number {{ font-family: 'Fraunces', serif; font-size: 1.55rem; font-weight: 700; color: {t['primary']} !important; line-height: 1.1; }}
+    .stat-label {{ font-size: 0.72rem; color: {t['muted']} !important; margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 0.03em; }}
+
     .result-card {{ border-radius: 14px; padding: 1.5rem 1.6rem; margin: 0.4rem 0 1rem 0; text-align: center; }}
     .result-label {{ font-size: 0.82rem; letter-spacing: 0.5px; opacity: 0.9; text-transform: uppercase; }}
     .result-name {{ font-family: 'Fraunces', serif; font-size: 1.7rem; font-weight: 600; margin: 0.3rem 0; }}
@@ -453,16 +469,45 @@ def render_about():
         </div>
 
         <div class="card">
-            <b>Konfigurasi Model</b>
-            <p style="margin:0.5rem 0 0.4rem 0; font-weight:600;">CNN Custom (CustomCNN_TomatoLeaf)</p>
-            <ul class="tips-list">
-                <li>Arsitektur: 4 blok konvolusi (32 → 64 → 128 → 256 filter), masing-masing berisi 2 lapisan Conv2D + Batch Normalization + ReLU, diikuti MaxPooling.</li>
-                <li>Classifier head: Global Average Pooling → Dense(128, ReLU) → Dropout(0.4) → Dense(10, Softmax).</li>
-                <li>Ukuran input: 224 × 224 piksel (RGB).</li>
-                <li>Optimizer: Adam (learning rate 0.001), loss function: categorical crossentropy.</li>
-                <li>Pelatihan menggunakan augmentasi data (rotasi, pergeseran, zoom, flip horizontal) dengan EarlyStopping dan ReduceLROnPlateau.</li>
-                <li>Performa pada data validasi: Accuracy 94,10%, F1-Score (macro) 94,09%.</li>
-            </ul>
+            <div class="card-eyebrow">Konfigurasi Model</div>
+            <div class="model-name">CNN Custom</div>
+            <div class="model-subtitle">CustomCNN_TomatoLeaf</div>
+
+            <div class="spec-row">
+                <div class="spec-label">Arsitektur</div>
+                <div class="spec-value">4 blok konvolusi (<code>32 → 64 → 128 → 256</code> filter) — tiap blok berisi 2× Conv2D + Batch Normalization + ReLU, diikuti MaxPooling.</div>
+            </div>
+            <div class="spec-row">
+                <div class="spec-label">Classifier Head</div>
+                <div class="spec-value">Global Average Pooling → Dense(128, ReLU) → Dropout(0.4) → Dense(10, Softmax)</div>
+            </div>
+            <div class="spec-row">
+                <div class="spec-label">Ukuran Input</div>
+                <div class="spec-value">224 × 224 piksel (RGB)</div>
+            </div>
+            <div class="spec-row">
+                <div class="spec-label">Optimizer</div>
+                <div class="spec-value">Adam · learning rate <code>0.001</code></div>
+            </div>
+            <div class="spec-row">
+                <div class="spec-label">Loss Function</div>
+                <div class="spec-value">Categorical Crossentropy</div>
+            </div>
+            <div class="spec-row">
+                <div class="spec-label">Strategi Training</div>
+                <div class="spec-value">Augmentasi data (rotasi, pergeseran, zoom, flip horizontal), dikombinasikan dengan EarlyStopping dan ReduceLROnPlateau.</div>
+            </div>
+
+            <div class="stat-row">
+                <div class="stat-box">
+                    <div class="stat-number">94.10%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">94.09%</div>
+                    <div class="stat-label">F1-Score (Macro)</div>
+                </div>
+            </div>
         </div>
 
         <div class="card">
