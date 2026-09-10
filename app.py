@@ -459,39 +459,33 @@ def render_about():
             <p style="margin:0;">Aplikasi ini membantu proses identifikasi awal berdasarkan gambar, dan bukan
             pengganti pemeriksaan langsung oleh ahli tanaman.</p>
         </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-        <div class="card">
-            <div class="card-eyebrow">Konfigurasi Model</div>
-            <div class="model-name">CNN Custom</div>
+    spec_cells = [
+        ("Arsitektur", "CNN bertingkat (4 blok)"),
+        ("Klasifikasi", "10 kelas"),
+        ("Input", "224 × 224 RGB"),
+        ("Optimizer", "Adam"),
+        ("Output", "9 Penyakit + Sehat"),
+        ("Pembelajaran", "Dilatih dari awal"),
+    ]
+    cells_html = "".join(
+        f'<div><div class="spec-cell-label">{label}</div><div class="spec-cell-value">{value}</div></div>'
+        for label, value in spec_cells
+    )
+    st.markdown(
+        '<div class="card">'
+        '<div class="card-eyebrow">Konfigurasi Model</div>'
+        '<div class="model-name">CNN Custom</div>'
+        f'<div class="spec-grid">{cells_html}</div>'
+        '</div>',
+        unsafe_allow_html=True,
+    )
 
-            <div class="spec-grid">
-                <div>
-                    <div class="spec-cell-label">Arsitektur</div>
-                    <div class="spec-cell-value">CNN bertingkat (4 blok)</div>
-                </div>
-                <div>
-                    <div class="spec-cell-label">Klasifikasi</div>
-                    <div class="spec-cell-value">10 kelas</div>
-                </div>
-                <div>
-                    <div class="spec-cell-label">Input</div>
-                    <div class="spec-cell-value">224 × 224 RGB</div>
-                </div>
-                <div>
-                    <div class="spec-cell-label">Optimizer</div>
-                    <div class="spec-cell-value">Adam</div>
-                </div>
-                <div>
-                    <div class="spec-cell-label">Output</div>
-                    <div class="spec-cell-value">9 Penyakit + Sehat</div>
-                </div>
-                <div>
-                    <div class="spec-cell-label">Pembelajaran</div>
-                    <div class="spec-cell-value">Dilatih dari awal</div>
-                </div>
-            </div>
-        </div>
-
+    st.markdown(
+        """
         <div class="card">
             <b>Cakupan Diagnosis</b>
             <p style="margin:0.5rem 0 0.4rem 0; font-weight:600;">9 penyakit umum dan kondisi sehat</p>
